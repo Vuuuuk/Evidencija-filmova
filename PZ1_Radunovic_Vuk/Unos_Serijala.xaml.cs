@@ -1,0 +1,303 @@
+﻿using Microsoft.Win32;
+using PZ1_Radunovic_Vuk.Assets.Klase;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Ink;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace PZ1_Radunovic_Vuk
+{
+
+    public partial class Unos_Serijala : Window
+    {
+
+        TextRange upis; //globalna za cuvanje rtf fajla, proveriti da li mogu da iskombinujem sa rtb_txt metodom
+        MessageBoxResult result = new MessageBoxResult(); //provera izlaza message box-a
+        public Unos_Serijala()
+        {
+            InitializeComponent();
+
+            //FORMATIRANJE RTB-a
+            cmb_toolbar_FontFamily.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source); //uzimamo sistemske fontove, sortiranje po imenu
+            cmb_toolbar_boja.ItemsSource = Toolbar.lista_boja; //kreirana lista boja, proveriti da li postoji neka jednostavnija implementacija
+            cmb_toolbar_boja.SelectedValue = Toolbar.lista_boja[0];
+            cmb_toolbar_font.ItemsSource = Toolbar.font_velicina;//kreirana lista velicina
+            cmb_toolbar_font.SelectedValue = Toolbar.font_velicina[1];
+            rtxt_opis.FontSize = double.Parse(cmb_toolbar_font.SelectedValue.ToString());//setovanje na pocetno selektovanu velicinu
+            //FORMATIRANJE RTB-a
+
+            //INICIJALIZACIJA_POLJA
+            txt_datum.Text = "Unesite datum izdavanja serijala ovde.";
+            txt_naslov.Text = "Unesite naslov serijala ovde.";
+            rb_2_sezone.IsChecked = false;
+            rb_4_sezone.IsChecked = false;
+            rb_6_sezone.IsChecked = false;
+            cmb_zanr.ItemsSource = Zanr.lista_zanrova;
+            cmb_zanr.SelectedItem = Zanr.lista_zanrova[0];
+            rtxt_opis.Document.Blocks.Clear();
+            rtxt_opis.Document.Blocks.Add(new Paragraph(new Run("Unesite opis serijala ovde.")));
+            //INICIJALIZACIJA_POLJA
+        }
+
+        bool Validacija()
+        {
+            bool provera = true;
+            if (txt_datum.Text.Trim().Equals(string.Empty) || txt_datum.Text.Trim().Equals("Unesite datum izdavanja serijala ovde.") 
+            || new Regex("^(0?[1-9]|1[0-9]|2[0-9]|3[01])[-](0?[1-9]|1[012])[-][0-9]{4}$").IsMatch(txt_datum.Text.Trim()) != true ) //test implementacija bez DateTime, proveriti da li je ok
+            {
+                lbl_datum_greska.Content = "*";
+                provera = false;
+            }
+            else
+                lbl_datum_greska.Content = string.Empty;
+            if (txt_naslov.Text.Trim().Equals(string.Empty) || txt_naslov.Text.Trim().Equals("Unesite naslov serijala ovde."))
+            {
+                lbl_naslov_greska.Content = "*";
+                provera = false;
+            }
+            else
+                lbl_naslov_greska.Content = string.Empty;
+            if (rb_2_sezone.IsChecked == false && rb_4_sezone.IsChecked == false && rb_6_sezone.IsChecked == false)
+            {
+                lbl_broj_sezona_greska.Content = "*";
+                provera = false;
+            }
+            else
+                lbl_broj_sezona_greska.Content = string.Empty;
+            if(cmb_zanr.SelectedValue.ToString().Trim().Equals("Odaberite zanr serijala."))
+            {
+                lbl_zanr_greska.Content = "*";
+                provera = false;
+            }
+            else
+                lbl_zanr_greska.Content = string.Empty;
+            if (img_poster.Source == null)
+            {
+                lbl_image_greska.Content = "*";
+                provera = false;
+            }
+            else
+                lbl_image_greska.Content = string.Empty;
+
+            if (rtb_text(rtxt_opis).Trim().Equals(string.Empty) || rtb_text(rtxt_opis).Trim().Equals("Unesite opis serijala ovde."))
+            {
+                lbl_rtxt_greska.Content = "*";
+                provera = false;
+            }
+            else
+                lbl_rtxt_greska.Content = string.Empty;
+            return provera;
+        }
+
+        //INICIJALIZACIJA_POLJA
+        private void txt_datum_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if(txt_datum.Text.Trim().Equals("Unesite datum izdavanja serijala ovde."))
+                txt_datum.Text = string.Empty;
+        }
+
+        private void txt_datum_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txt_datum.Text.Trim().Equals(string.Empty))
+                txt_datum.Text = "Unesite datum izdavanja serijala ovde.";
+        }
+
+        private void txt_naslov_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (txt_naslov.Text.Trim().Equals("Unesite naslov serijala ovde."))
+                txt_naslov.Text = string.Empty;
+        }
+        private void txt_naslov_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (txt_naslov.Text.Trim().Equals(string.Empty))
+                txt_naslov.Text = "Unesite naslov serijala ovde.";
+        }
+        private void rtxt_opis_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (rtb_text(rtxt_opis).Trim().Equals("Unesite opis serijala ovde."))
+                rtxt_opis.Document.Blocks.Clear();
+        }
+        private void rtxt_opis_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (rtb_text(rtxt_opis).Trim().Equals(string.Empty))
+                rtxt_opis.Document.Blocks.Add(new Paragraph(new Run("Unesite opis serijala ovde.")));
+        }
+        //INICIJALIZACIJA_POLJA
+
+        private void btn_potvrda_Click(object sender, RoutedEventArgs e)
+        {
+
+            int indeks_za_promenu = 0;
+            Serije nova_serija = new Serije(); //kako bih mogli da pristupimo polju potrebnom za referenciranje RTB-a
+
+            if (Validacija())
+            { 
+
+                if (MainWindow.lista_serija.Count() == 0)
+                {
+                    if (rb_2_sezone.IsChecked == true)
+                        MainWindow.lista_serija.Add(nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 2, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                    cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+                    if (rb_4_sezone.IsChecked == true)
+                        MainWindow.lista_serija.Add(nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 4, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                    cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+                    if (rb_6_sezone.IsChecked == true)
+                        MainWindow.lista_serija.Add(nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 6, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                    cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+
+                    //RTF_KREIRANJE
+                    FileStream fileStream = new FileStream(nova_serija.Rtb_ime, FileMode.Create); ;
+                    upis = new TextRange(rtxt_opis.Document.ContentStart, rtxt_opis.Document.ContentEnd);
+                    upis.Save(fileStream, DataFormats.Rtf);
+                    fileStream.Close();
+                    //RTF_KREIRANJE
+
+                    MessageBox.Show("Uspesno dodat serijal!", "Obavestenje", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                }
+                else
+                {
+                    for (int i = 0; i < MainWindow.lista_serija.Count(); i++)
+                        if (txt_naslov.Text.Trim().Equals(MainWindow.lista_serija[i].Naslov.Trim()))
+                            indeks_za_promenu = i+1;
+
+                    if (indeks_za_promenu != 0)
+                    {
+                        result = MessageBox.Show("Serija sa unetim nazivom vec postoji, da li zelite da je izmenite?", "Obavestenje",
+                        MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                        if (result.Equals(MessageBoxResult.Yes))
+                        {
+                            if (rb_2_sezone.IsChecked == true)
+                                MainWindow.lista_serija[indeks_za_promenu-1] = (nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 2, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                            cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+                            if (rb_4_sezone.IsChecked == true)
+                                MainWindow.lista_serija[indeks_za_promenu-1] = (nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 4, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                            cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+                            if (rb_6_sezone.IsChecked == true)
+                                MainWindow.lista_serija[indeks_za_promenu-1] = (nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 6, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                            cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+
+                            //RTF_KREIRANJE
+                            FileStream fileStream = new FileStream(nova_serija.Rtb_ime, FileMode.Create); ;
+                            upis = new TextRange(rtxt_opis.Document.ContentStart, rtxt_opis.Document.ContentEnd);
+                            upis.Save(fileStream, DataFormats.Rtf);
+                            fileStream.Close();
+                            //RTF_KREIRANJE
+                        }
+                    }
+                    else
+                    {
+                        if (rb_2_sezone.IsChecked == true)
+                            MainWindow.lista_serija.Add(nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 2, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                        cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+                        if (rb_4_sezone.IsChecked == true)
+                            MainWindow.lista_serija.Add(nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 4, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                        cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+                        if (rb_6_sezone.IsChecked == true)
+                            MainWindow.lista_serija.Add(nova_serija = new Serije(img_poster.Source.ToString(), txt_datum.Text, 6, txt_naslov.Text, cmb_zanr.SelectedValue.ToString(), txt_naslov.Text + "_" +
+                        cmb_zanr.SelectedValue.ToString() + "_" + txt_datum.Text));
+
+                        //RTF_KREIRANJE
+                        FileStream fileStream = new FileStream(nova_serija.Rtb_ime, FileMode.Create); ;
+                        upis = new TextRange(rtxt_opis.Document.ContentStart, rtxt_opis.Document.ContentEnd);
+                        upis.Save(fileStream, DataFormats.Rtf);
+                        fileStream.Close();
+                        //RTF_KREIRANJE
+
+                        MessageBox.Show("Uspesno dodat serijal!", "Obavestenje", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Molimo popunite sva polja na odgovarajuci nacin!", "Obavestenje", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+
+            indeks_za_promenu = 0;
+
+        }
+
+        private void rtxt_opis_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            int broj_reci = Regex.Matches(rtb_text(rtxt_opis), @"[^\s]+").Count; //brojimo sve do space-a, space se izbacuje. Podrazumevan format [Cao. razmak]
+            tb_broj_reci.Text = "                                            Trenutan broj reci u tekstu: " + broj_reci;
+
+            object bold = rtxt_opis.Selection.GetPropertyValue(Inline.FontWeightProperty); //proveravamo da li je selektovani tekst boldovan ili ne
+            btn_toolbar_bold.IsChecked = (bold != DependencyProperty.UnsetValue) && (bold.Equals(FontWeights.Bold)); //da li je dugme selectovano (true) ili ne
+            //DependancyProperty selektuje propertije koji se menjaju kroz neke "animacije", tj. da li je neki stil primenjen na nas text
+
+            object italic = rtxt_opis.Selection.GetPropertyValue(Inline.FontStyleProperty); //proveravamo da li je selektovani tekst italic
+            btn_toolbar_italic.IsChecked = (italic != DependencyProperty.UnsetValue) && (italic.Equals(FontStyles.Italic)); //italic
+
+            object underline = rtxt_opis.Selection.GetPropertyValue(Inline.TextDecorationsProperty); //proveravamo da li je selektovani text underline
+            btn_toolbar_underline.IsChecked = (underline != DependencyProperty.UnsetValue) && (underline.Equals(TextDecorations.Underline)); //underline
+
+            object font = rtxt_opis.Selection.GetPropertyValue(Inline.FontFamilyProperty); //izvlacimo property fonta iz selektovanog teksta
+            cmb_toolbar_FontFamily.SelectedItem = font; //ispisujemo bas taj selektovani font u cb-u
+
+            object velicina = rtxt_opis.Selection.GetPropertyValue(Inline.FontSizeProperty); //izvlacimo propery velicina_fonta iz selktovanog teksta
+            cmb_toolbar_font.SelectedItem = velicina.ToString(); //ispisujemo bas tu velicinu u cb-u
+    
+            //proveriti i dodati za boju
+        }
+
+        private void cmb_FontFamily_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(cmb_toolbar_FontFamily.SelectedItem != null) //ukoliko cb za font_stila nije prazan
+                rtxt_opis.Selection.ApplyPropertyValue(Inline.FontFamilyProperty, cmb_toolbar_FontFamily.SelectedItem); //izabrani font, primenjujemo na text
+
+        }
+
+        private void cmb_toolbar_font_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmb_toolbar_font.SelectedItem != null) //ukoliko cb za velicinu_fonta nije prazan
+                rtxt_opis.Selection.ApplyPropertyValue(Inline.FontSizeProperty, cmb_toolbar_font.SelectedItem); //izabranu velicinu, primenjujemo na text
+        }
+
+        private void cmb_toolbar_boja_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmb_toolbar_boja.SelectedItem != null) //ukoliko cb za boju nije prazan
+                rtxt_opis.Selection.ApplyPropertyValue(Inline.ForegroundProperty, cmb_toolbar_boja.SelectedItem); //izabranu boju, primenjujemo na text
+        }
+
+        private void btn_pretraga_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog op = new OpenFileDialog();
+            op.Title = "Izaberite sliku";
+            op.Filter = "Filter dostupnih fajlova | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+            if (op.ShowDialog() == true)
+                img_poster.Source = new BitmapImage(new Uri(op.FileName));
+        }
+
+        string rtb_text(RichTextBox rtb)
+        {
+            TextRange tr = new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd);
+
+            return tr.Text;
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void btn_izlaz_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+    }
+}

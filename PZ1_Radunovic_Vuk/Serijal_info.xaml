@@ -1,0 +1,129 @@
+﻿<Window x:Class="PZ1_Radunovic_Vuk.Serijal_info"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PZ1_Radunovic_Vuk"
+        mc:Ignorable="d"
+        Title="Serijal_info" 
+        SizeToContent="WidthAndHeight"
+        WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" 
+        Background="Transparent"
+        MouseLeftButtonDown ="Window_MouseLeftButtonDown">
+
+
+    <Window.Resources>
+
+        <!-- DUGMIC EFEKAT -->
+
+        <Style x:Key="btn_efekat" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="btn_okvir" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.7" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DUGMIC EFEKAT -->
+
+    </Window.Resources>
+
+
+    <Canvas 
+    Height="730" Width="730">
+
+
+        <Path>
+
+            <Path.Fill>
+
+                <SolidColorBrush Color="#424242"/>
+                <!-- BOJA ISCRTAN POVRSINE -->
+
+            </Path.Fill>
+
+            <Path.Data>
+
+                <!-- POVRSINA -->
+                <PathGeometry>
+
+                    <!-- FIGURA -->
+                    <PathFigure StartPoint="30,0">
+
+                        <LineSegment Point="0,30"/>
+                        <LineSegment Point="0,700"/>
+                        <LineSegment Point="30,730"/>
+                        <LineSegment Point="700,730"/>
+                        <LineSegment Point="730,700"/>
+                        <LineSegment Point="730,30"/>
+                        <LineSegment Point="700,0"/>
+                        <LineSegment Point="30,0"/>
+
+                    </PathFigure>
+                    <!-- FIGURA -->
+
+                </PathGeometry>
+                <!-- POVRSINA -->
+
+            </Path.Data>
+
+        </Path>
+
+
+        <Grid Width="692" Height="692" 
+        Canvas.Top="19" Canvas.Bottom="66"
+        Canvas.Left="19" Canvas.Right="66"
+        Background="#424242">
+
+            <!-- MENI -->
+
+            <Button x:Name="btn_izlaz" 
+             Style="{StaticResource btn_efekat}"
+             Width="20" Height="22"
+             VerticalAlignment="Top" HorizontalAlignment="Right"
+             Background="Transparent"
+             Click="btn_izlaz_Click">
+                <Image Source="Assets\Meni\btn_meni_izlaz.png"/>
+            </Button>
+
+            <!-- MENI -->
+
+            <!-- SADRZAJ -->
+
+            <Image 
+            x:Name="img_poster" 
+            Margin="25,10,25,385"/>
+
+            <DockPanel 
+             Width="672" Height="380"
+             VerticalAlignment="Bottom" HorizontalAlignment="Center"
+             Margin="10,0">
+
+                <RichTextBox x:Name="rtxt_opis"
+                 IsReadOnly="True"
+                 FontSize="12"
+                 Background="#E0E0E0"
+                 Foreground="#212121"/>
+
+            </DockPanel>
+
+            <!-- SADRZAJ -->
+
+        </Grid>
+
+
+    </Canvas>
+
+
+</Window>

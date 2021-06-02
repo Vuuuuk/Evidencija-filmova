@@ -1,0 +1,324 @@
+﻿<Window x:Class="PZ1_Radunovic_Vuk.Izmena_Serijala"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PZ1_Radunovic_Vuk"
+        mc:Ignorable="d"
+        Title="Izmena_Serijala" SizeToContent="WidthAndHeight" 
+        WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" 
+        Background="Transparent"
+        MouseLeftButtonDown= "Window_MouseLeftButtonDown">
+    <Window.Resources>
+
+        <!-- DUGMIC EFEKAT -->
+
+        <Style x:Key="btn_efekat" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="btn_okvir" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.7" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DUGMIC EFEKAT -->
+
+    </Window.Resources>
+
+    <Canvas Width="900" Height="500">
+
+        <Path>
+
+            <Path.Fill>
+
+                <SolidColorBrush Color="#424242"/>
+                <!-- BOJA ISCRTAN POVRSINE -->
+
+            </Path.Fill>
+
+            <Path.Data>
+
+                <!-- POVRSINA -->
+                <PathGeometry>
+
+                    <!-- FIGURA -->
+                    <PathFigure StartPoint="30,0">
+
+                        <LineSegment Point="0,30"/>
+                        <LineSegment Point="0,470"/>
+                        <LineSegment Point="30,500"/>
+                        <LineSegment Point="870,500"/>
+                        <LineSegment Point="900,470"/>
+                        <LineSegment Point="900,30"/>
+                        <LineSegment Point="870,0"/>
+                        <LineSegment Point="30,0"/>
+
+                    </PathFigure>
+                    <!-- FIGURA -->
+
+                </PathGeometry>
+                <!-- POVRSINA -->
+
+            </Path.Data>
+
+        </Path>
+
+        <Grid Width="900" Height="500">
+
+            <!-- MENI -->
+
+            <Button x:Name="btn_izlaz" 
+        Style="{StaticResource btn_efekat}"
+        Width="21" Height="21" 
+        Margin="854,15,25,464"
+        Background="Transparent"
+        Click="btn_izlaz_Click">
+                <Image Source="Assets\Meni\btn_meni_izlaz.png"/>
+            </Button>
+
+            <Button x:Name="btn_pretraga" 
+        Style="{StaticResource btn_efekat}"
+        Width="21" Height="21" 
+        Margin="20,13,859,466"
+        Background="Transparent" 
+        Click="btn_pretraga_Click">
+                <Image Source="Assets\Meni\btn_unos_browse.png"/>
+            </Button>
+
+            <Button x:Name="btn_potvrda" 
+        Style="{StaticResource btn_efekat}"
+        Width="21" Height="21" 
+        Margin="50,13,829,466"
+        Background="Transparent" 
+        Click="btn_potvrda_Click">
+                <Image Source="Assets\Meni\btn_unos_potvrda.png"/>
+            </Button>
+
+            <!-- MENI -->
+
+            <!-- SADRZAJ -->
+
+            <Label
+        x:Name="lbl_datum"
+        FontSize="18"
+        Margin="10,55,820,409"
+        Foreground="#E0E0E0"
+        Content="Datum:"/>
+
+            <TextBox 
+        x:Name="txt_datum"
+        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"   
+        FontSize="13"
+        Background="#E0E0E0"
+        Foreground="#212121"
+        Margin="127,59,486,409"
+        TextWrapping="Wrap" GotFocus="txt_datum_GotFocus" LostFocus="txt_datum_LostFocus"/>
+
+            <Label
+        x:Name="lbl_naslov"
+        FontSize="18"
+        Margin="10,111,820,353"
+        Foreground="#E0E0E0"
+        Content="Naslov:"/>
+
+            <TextBox 
+        x:Name="txt_naslov"
+        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"   
+        FontSize="13"
+        Background="#E0E0E0"
+        Foreground="#212121"
+        Margin="127,115,486,353"
+        TextWrapping="Wrap" GotFocus="txt_naslov_GotFocus" LostFocus="txt_naslov_LostFocus"/>
+
+            <Label
+        x:Name="lbl_broj_sezona"
+        FontSize="18"
+        Margin="10,160,782,304"
+        Foreground="#E0E0E0"
+        Content="Broj sezona:"/>
+
+            <RadioButton 
+        x:Name="rb_2_sezone"
+        GroupName="sezone"
+        FontSize="12"
+        Foreground="#E0E0E0"
+        Background="#E0E0E0"
+        Content="2 Sezone"
+        Margin="127,172,699,314"/>
+
+            <RadioButton 
+        x:Name="rb_4_sezone"
+        GroupName="sezone"
+        FontSize="12"
+        Foreground="#E0E0E0"
+        Background="#E0E0E0"
+        Content="4 Sezone"
+        Margin="231,172,593,314"/>
+
+            <RadioButton 
+        x:Name="rb_6_sezone"
+        GroupName="sezone"
+        FontSize="12"
+        Foreground="#E0E0E0"
+        Background="#E0E0E0"
+        Content="6 Sezona"
+        Margin="340,172,486,314"/>
+
+            <Label
+        x:Name="lbl_zanr"
+        FontSize="18"
+        Margin="14,215,834,249"
+        Foreground="#E0E0E0"
+        Content="Zanr:"/>
+
+            <ComboBox
+        x:Name="cmb_zanr"
+        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"   
+        FontSize="13"
+        Background="#E0E0E0"
+        Foreground="#212121"
+        Margin="127,215,486,253"
+        Width="287" Height="32"/>
+
+            <Image 
+        x:Name="img_poster"
+        Margin="20,266,486,20"/>
+
+            <!-- OPIS-RitchTextBox -->
+
+            <DockPanel 
+        Margin="446,120,25,20">
+
+                <ToolBar 
+            DockPanel.Dock ="Top"
+            Background="#E0E0E0"
+            Foreground="#212121">
+
+                    <ToggleButton x:Name="btn_toolbar_bold"  
+                Width="25" 
+                Command="EditingCommands.ToggleBold" 
+                Content="B"/>
+
+                    <ToggleButton x:Name="btn_toolbar_underline"  
+                Width="25" 
+                Command="EditingCommands.ToggleUnderline" 
+                Content="U"/>
+
+                    <ToggleButton x:Name="btn_toolbar_italic" 
+                Width="25"
+                Command="EditingCommands.ToggleItalic" 
+                Content="𝘐"/>
+
+                    <ComboBox x:Name="cmb_toolbar_FontFamily" SelectionChanged="cmb_FontFamily_SelectionChanged"
+                Width="150" 
+                Background="white"
+                Foreground="#212121"
+                BorderThickness="0"/>
+
+                    <Separator/>
+
+                    <ComboBox x:Name="cmb_toolbar_font" SelectionChanged="cmb_toolbar_font_SelectionChanged"
+                Background="white"
+                Foreground="#212121"
+                BorderThickness="0"/>
+
+                    <Separator/>
+
+                    <ComboBox x:Name="cmb_toolbar_boja" SelectionChanged="cmb_toolbar_boja_SelectionChanged"
+                Background="white"
+                Foreground="#212121"
+                BorderThickness="0" Margin="0" Width="150"/>
+
+                </ToolBar>
+
+                <StatusBar 
+            DockPanel.Dock="Bottom"
+            Background="#626161"
+            Foreground="#212121">
+
+                    <StatusBarItem>
+
+                        <TextBlock x:Name="tb_broj_reci"
+                    Background="#626161"
+                    Foreground="#E0E0E0" Width="436"/>
+
+                    </StatusBarItem>
+
+                </StatusBar>
+
+                <RichTextBox x:Name="rtxt_opis"
+            FontSize="12"
+            Background="#E0E0E0"
+            Foreground="#212121"
+            SelectionChanged="rtxt_opis_SelectionChanged" GotFocus="rtxt_opis_GotFocus" LostFocus="rtxt_opis_LostFocus"/>
+
+            </DockPanel>
+
+            <!-- OPIS-RitchTextBox -->
+
+            <Label
+        x:Name="lbl_opis"
+        FontSize="18"
+        Margin="596,55,165,409"
+        Foreground="#E0E0E0"
+        Content="Podaci o serijalu"/>
+
+            <!-- SADRZAJ -->
+
+            <!-- OBAVESTENJA -->
+
+            <Label
+            x:Name="lbl_datum_greska"
+            FontSize="18"
+            Margin="419,55,462,409"
+            ToolTip="Obavezno popuniti polje datumom izdavanja serijala u odgovaracujem formatu dd-mm-yy."
+            Foreground="#CF6579"/>
+            <Label
+            x:Name="lbl_naslov_greska"
+            FontSize="18"
+            Margin="419,111,462,353"
+            ToolTip="Obavezno popuniti polje nazivog serijala."
+            Foreground="#CF6579"/>
+            <Label
+            x:Name="lbl_broj_sezona_greska"
+            FontSize="18"
+            Margin="419,162,462,302"
+            ToolTip="Obavezno izabrati broj sezona serijala."
+            Foreground="#CF6579"/>
+            <Label
+            x:Name="lbl_zanr_greska"
+            FontSize="18"
+            Margin="419,215,462,249"
+            ToolTip="Obazevno izabrati zanr serijala."
+            Foreground="#CF6579"/>
+            <Label
+            x:Name="lbl_image_greska"
+            FontSize="18"
+            Margin="419,342,462,122"
+            ToolTip="Obavezno odabrati poster serijala klikom na odgovarajuce dugme."
+            Foreground="#CF6579"/>
+            <Label
+            x:Name="lbl_rtxt_greska"
+            FontSize="18"
+            Margin="740,55,141,409"
+            ToolTip="Obavezno uneti opis serijala."
+            Foreground="#CF6579"/>
+
+            <!-- OBAVESTENJA -->
+
+        </Grid>
+
+    </Canvas>
+
+</Window>
